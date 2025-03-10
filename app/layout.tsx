@@ -19,12 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <QueryProvider>
-          <div className="bg-white">
-            {/* <Navbar /> */}
-            {children}
-          </div>
-        </QueryProvider>
+        <div className="bg-white">
+          <QueryProvider>
+            <div className="bg-white max-w-[85%] m-auto">
+              {/* <Navbar /> */}
+              {children}
+            </div>
+          </QueryProvider>
+        </div>
       </body>
     </html>
   );

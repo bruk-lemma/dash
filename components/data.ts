@@ -1,3 +1,45 @@
+export interface School {
+  name: string;
+  total: number;
+  passed: number;
+  failed: number;
+  maleStudents: {
+    total: number;
+    passed: number;
+    failed: number;
+  };
+  femaleStudents: {
+    total: number;
+    passed: number;
+    failed: number;
+  };
+  LicenceType: {
+    አውቶሞቢል: number;
+    ደረቅ_1: number;
+    ደረቅ_2: number;
+    ህዝብ_1: number;
+    ህዝብ_2: number;
+  };
+}
+
+export interface Station {
+  name: string;
+  region: string;
+  schools: School[];
+  students: {
+    total: number;
+    passed: {
+      total: number;
+      male: number;
+      female: number;
+    };
+    failed: {
+      total: number;
+      male: number;
+      female: number;
+    };
+  };
+}
 export const data = [
   {
     name: "Station 1",

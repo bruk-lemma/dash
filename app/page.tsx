@@ -12,7 +12,7 @@ export default function Home() {
           Welcome ! Click the button below to go to the Dashboard
         </h2>
         <button
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/data")}
           className="px-6 py-3 bg-[#6c63ff] text-white font-semibold rounded-sm shadow-md hover:bg-gray-50 hover:text-black transition border"
         >
           Go to Dashboard
