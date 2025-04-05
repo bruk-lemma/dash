@@ -19,9 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <div className="bg-white">
+        <div className="h-screen ">
           <QueryProvider>
-            <div className="bg-white max-w-[85%] m-auto">
+            <div className="bg-white max-w-[99%] m-auto">
               {/* <Navbar /> */}
               {children}
             </div>
