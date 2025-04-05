@@ -1,4 +1,5 @@
 export interface School {
+  id: number;
   name: string;
   total: number;
   passed: number;
@@ -14,15 +15,17 @@ export interface School {
     failed: number;
   };
   LicenceType: {
-    አውቶሞቢል: number;
-    ደረቅ_1: number;
-    ደረቅ_2: number;
-    ህዝብ_1: number;
-    ህዝብ_2: number;
+    አውቶሞቢል?: number;
+    ደረቅ_1?: number;
+    ደረቅ_2?: number;
+    ህዝብ_1?: number;
+    ህዝብ_2?: number;
   };
+  students: Student[];
 }
 
 export interface Station {
+  id: number;
   name: string;
   region: string;
   schools: School[];
@@ -40,6 +43,17 @@ export interface Station {
     };
   };
 }
+
+export interface Student {
+  id: number;
+  name: string;
+  status: string;
+  createdAt: string;
+  regionid: number;
+  licenseType: string;
+  gender: string;
+}
+
 export const data = [
   {
     name: "Station 1",
@@ -312,3 +326,525 @@ export const data = [
     },
   },
 ];
+
+export const sampleData: Station[] = [
+  {
+    id: 1,
+    name: "Station 1",
+    region: "Region 1",
+    schools: [
+      {
+        id: 1,
+        name: "School 1",
+        total: 3,
+        passed: 2,
+        failed: 1,
+        maleStudents: {
+          total: 2,
+          passed: 1,
+          failed: 1,
+        },
+        femaleStudents: {
+          total: 1,
+          passed: 1,
+          failed: 0,
+        },
+        LicenceType: {
+          አውቶሞቢል: 1,
+          ደረቅ_1: 1,
+          ደረቅ_2: 1,
+        },
+        students: [
+          {
+            id: 1,
+            name: "John Doe",
+            status: "passed",
+            createdAt: "2025-01-16T10:00:00Z",
+            regionid: 1,
+            licenseType: "አውቶሞቢል",
+            gender: "male",
+          },
+          {
+            id: 2,
+            name: "Jane Doe",
+            status: "passed",
+            createdAt: "2025-01-20T10:05:00Z",
+            regionid: 1,
+            licenseType: "ደረቅ_1",
+            gender: "female",
+          },
+          {
+            id: 3,
+            name: "Alex Smith",
+            status: "failed",
+            createdAt: "2025-01-25T10:10:00Z",
+            regionid: 1,
+            licenseType: "ደረቅ_2",
+            gender: "male",
+          },
+        ],
+      },
+      {
+        id: 2,
+        name: "School 2",
+        total: 3,
+        passed: 1,
+        failed: 2,
+        maleStudents: {
+          total: 1,
+          passed: 0,
+          failed: 1,
+        },
+        femaleStudents: {
+          total: 2,
+          passed: 1,
+          failed: 1,
+        },
+        LicenceType: {
+          አውቶሞቢል: 1,
+          ደረቅ_1: 1,
+          ደረቅ_2: 1,
+        },
+        students: [
+          {
+            id: 4,
+            name: "Emily Brown",
+            status: "failed",
+            createdAt: "2025-02-16T10:15:00Z",
+            regionid: 1,
+            licenseType: "አውቶሞቢል",
+            gender: "female",
+          },
+          {
+            id: 5,
+            name: "Michael Johnson",
+            status: "passed",
+            createdAt: "2025-02-20T10:20:00Z",
+            regionid: 1,
+            licenseType: "ደረቅ_1",
+            gender: "male",
+          },
+          {
+            id: 6,
+            name: "Sarah Davis",
+            status: "failed",
+            createdAt: "2025-02-25T10:25:00Z",
+            regionid: 1,
+            licenseType: "ደረቅ_2",
+            gender: "female",
+          },
+        ],
+      },
+      {
+        id: 3,
+        name: "School 3",
+        total: 3,
+        passed: 2,
+        failed: 1,
+        maleStudents: {
+          total: 2,
+          passed: 1,
+          failed: 1,
+        },
+        femaleStudents: {
+          total: 1,
+          passed: 1,
+          failed: 0,
+        },
+        LicenceType: {
+          አውቶሞቢል: 1,
+          ደረቅ_1: 1,
+          ደረቅ_2: 1,
+        },
+        students: [
+          {
+            id: 7,
+            name: "Chris Green",
+            status: "passed",
+            createdAt: "2025-03-01T10:30:00Z",
+            regionid: 1,
+            licenseType: "ደረቅ_1",
+            gender: "male",
+          },
+          {
+            id: 8,
+            name: "Diana Blue",
+            status: "passed",
+            createdAt: "2025-03-10T10:35:00Z",
+            regionid: 1,
+            licenseType: "ደረቅ_2",
+            gender: "female",
+          },
+          {
+            id: 9,
+            name: "Frank Black",
+            status: "failed",
+            createdAt: "2025-03-15T10:40:00Z",
+            regionid: 1,
+            licenseType: "አውቶሞቢል",
+            gender: "male",
+          },
+        ],
+      },
+    ],
+    students: {
+      total: 9,
+      passed: {
+        total: 5,
+        male: 3,
+        female: 2,
+      },
+      failed: {
+        total: 4,
+        male: 2,
+        female: 2,
+      },
+    },
+  },
+  {
+    id: 2,
+    name: "Station 2",
+    region: "Region 2",
+    schools: [
+      {
+        id: 4,
+        name: "School 4",
+        total: 5,
+        passed: 3,
+        failed: 2,
+        maleStudents: {
+          total: 3,
+          passed: 2,
+          failed: 1,
+        },
+        femaleStudents: {
+          total: 2,
+          passed: 1,
+          failed: 1,
+        },
+        LicenceType: {
+          አውቶሞቢል: 1,
+          ደረቅ_1: 2,
+          ደረቅ_2: 2,
+        },
+        students: [
+          {
+            id: 10,
+            name: "Grace Yellow",
+            status: "passed",
+            createdAt: "2025-04-01T12:00:00Z",
+            regionid: 2,
+            licenseType: "አውቶሞቢል",
+            gender: "female",
+          },
+          {
+            id: 11,
+            name: "Henry Pink",
+            status: "passed",
+            createdAt: "2025-04-05T12:05:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_1",
+            gender: "male",
+          },
+          {
+            id: 12,
+            name: "Isaac Orange",
+            status: "failed",
+            createdAt: "2025-04-10T12:10:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_2",
+            gender: "male",
+          },
+          {
+            id: 13,
+            name: "Julia Purple",
+            status: "failed",
+            createdAt: "2025-04-15T12:15:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_1",
+            gender: "female",
+          },
+          {
+            id: 14,
+            name: "Sam Orange",
+            status: "passed",
+            createdAt: "2025-04-20T12:20:00Z",
+            regionid: 2,
+            licenseType: "አውቶሞቢል",
+            gender: "male",
+          },
+        ],
+      },
+      {
+        id: 5,
+        name: "School 5",
+        total: 7,
+        passed: 5,
+        failed: 2,
+        maleStudents: {
+          total: 4,
+          passed: 3,
+          failed: 1,
+        },
+        femaleStudents: {
+          total: 3,
+          passed: 2,
+          failed: 1,
+        },
+        LicenceType: {
+          አውቶሞቢል: 2,
+          ደረቅ_1: 2,
+          ደረቅ_2: 3,
+        },
+        students: [
+          {
+            id: 15,
+            name: "Alice Green",
+            status: "passed",
+            createdAt: "2025-05-01T12:25:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_1",
+            gender: "female",
+          },
+          {
+            id: 16,
+            name: "Mark Brown",
+            status: "passed",
+            createdAt: "2025-05-05T12:30:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_2",
+            gender: "male",
+          },
+          {
+            id: 17,
+            name: "Lily White",
+            status: "passed",
+            createdAt: "2025-05-10T12:35:00Z",
+            regionid: 2,
+            licenseType: "አውቶሞቢል",
+            gender: "female",
+          },
+          {
+            id: 18,
+            name: "Tom Black",
+            status: "failed",
+            createdAt: "2025-05-15T12:40:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_2",
+            gender: "male",
+          },
+          {
+            id: 19,
+            name: "Nina Red",
+            status: "failed",
+            createdAt: "2025-05-20T12:45:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_1",
+            gender: "female",
+          },
+          {
+            id: 20,
+            name: "James Grey",
+            status: "passed",
+            createdAt: "2025-05-25T12:50:00Z",
+            regionid: 2,
+            licenseType: "አውቶሞቢል",
+            gender: "male",
+          },
+
+          {
+            id: 21,
+            name: "Sophie Blue",
+            status: "passed",
+            createdAt: "2025-05-30T12:55:00Z",
+            regionid: 2,
+            licenseType: "ደረቅ_2",
+            gender: "female",
+          },
+        ],
+      },
+    ],
+    students: {
+      total: 12,
+      passed: {
+        total: 8,
+        male: 5,
+        female: 3,
+      },
+      failed: {
+        total: 4,
+        male: 2,
+        female: 2,
+      },
+    },
+  },
+];
+
+// export const sampleData: Station[] = [
+//   {
+//     id: 1,
+//     name: "Station A",
+//     region: "Region 1",
+//     schools: [
+//       {
+//         id: 1,
+//         name: "School 1",
+//         total: 100,
+//         passed: 80,
+//         failed: 20,
+//         maleStudents: {
+//           total: 50,
+//           passed: 40,
+//           failed: 10,
+//         },
+//         femaleStudents: {
+//           total: 50,
+//           passed: 40,
+//           failed: 10,
+//         },
+//         LicenceType: {
+//           አውቶሞቢል: 10,
+//           ደረቅ_1: 15,
+//           ደረቅ_2: 20,
+//           ህዝብ_1: 25,
+//           ህዝብ_2: 30,
+//         },
+//         students: [
+//           {
+//             id: 1,
+//             name: "John Doe",
+//             status: "passed",
+//             createdAt: "2025-03-16T10:00:00Z",
+//             regionid: 1,
+//             licenseType: "አውቶሞቢል",
+//           },
+//           {
+//             id: 2,
+//             name: "Jane Doe",
+//             status: "failed",
+//             createdAt: "2025-03-16T10:05:00Z",
+//             regionid: 1,
+//             licenseType: "ደረቅ_1",
+//           },
+//         ],
+//       },
+//       {
+//         id: 2,
+//         name: "School 2",
+//         total: 120,
+//         passed: 90,
+//         failed: 30,
+//         maleStudents: {
+//           total: 60,
+//           passed: 45,
+//           failed: 15,
+//         },
+//         femaleStudents: {
+//           total: 60,
+//           passed: 45,
+//           failed: 15,
+//         },
+//         LicenceType: {
+//           አውቶሞቢል: 12,
+//           ደረቅ_1: 18,
+//           ደረቅ_2: 25,
+//           ህዝብ_1: 30,
+//           ህዝብ_2: 35,
+//         },
+//         students: [
+//           {
+//             id: 3,
+//             name: "Alice Smith",
+//             status: "passed",
+//             createdAt: "2025-03-16T10:10:00Z",
+//             regionid: 1,
+//             licenseType: "ህዝብ_1",
+//           },
+//           {
+//             id: 4,
+//             name: "Bob Brown",
+//             status: "failed",
+//             createdAt: "2025-03-16T10:15:00Z",
+//             regionid: 1,
+//             licenseType: "ደረቅ_2",
+//           },
+//         ],
+//       },
+//     ],
+//     students: {
+//       total: 220,
+//       passed: {
+//         total: 170,
+//         male: 85,
+//         female: 85,
+//       },
+//       failed: {
+//         total: 50,
+//         male: 25,
+//         female: 25,
+//       },
+//     },
+//   },
+//   {
+//     id: 2,
+//     name: "Station B",
+//     region: "Region 2",
+//     schools: [
+//       {
+//         id: 3,
+//         name: "School 3",
+//         total: 90,
+//         passed: 70,
+//         failed: 20,
+//         maleStudents: {
+//           total: 45,
+//           passed: 35,
+//           failed: 10,
+//         },
+//         femaleStudents: {
+//           total: 45,
+//           passed: 35,
+//           failed: 10,
+//         },
+//         LicenceType: {
+//           አውቶሞቢል: 5,
+//           ደረቅ_1: 10,
+//           ደረቅ_2: 15,
+//           ህዝብ_1: 20,
+//           ህዝብ_2: 25,
+//         },
+//         students: [
+//           {
+//             id: 5,
+//             name: "Chris Green",
+//             status: "passed",
+//             createdAt: "2025-03-16T11:00:00Z",
+//             regionid: 2,
+//             licenseType: "ህዝብ_2",
+//           },
+//           {
+//             id: 6,
+//             name: "Diana Blue",
+//             status: "failed",
+//             createdAt: "2025-03-16T11:05:00Z",
+//             regionid: 2,
+//             licenseType: "ደረቅ_1",
+//           },
+//         ],
+//       },
+//     ],
+//     students: {
+//       total: 90,
+//       passed: {
+//         total: 70,
+//         male: 35,
+//         female: 35,
+//       },
+//       failed: {
+//         total: 20,
+//         male: 10,
+//         female: 10,
+//       },
+//     },
+//   },
+// ];

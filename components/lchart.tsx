@@ -15,7 +15,7 @@ import {
 // const COLORS = ["#2563EB", "#1D4ED8", "#0F766E", "#0EA5E9", "#0284C7"];
 const COLORS = ["#7B1FA2", "#6A1B9A", "#8E24AA", "#9C27B0", "#AB47BC"];
 
-export default function LicenseBarChart({
+function LicenseBarChart({
   licenseTypeData,
 }: {
   licenseTypeData: Record<string, number>;
@@ -61,3 +61,52 @@ export default function LicenseBarChart({
     </div>
   );
 }
+
+// Color palette for the bars
+function LicenseBarChart2({
+  licenseTypeData,
+}: {
+  licenseTypeData: Record<string, number>; // Updated type to accept the object
+}) {
+  // Convert object to array and transform
+  const data = Object.entries(licenseTypeData || {}).map(
+    ([licenseType, count]) => ({
+      name: licenseType || "Unspecified",
+      value: count * 1000, // Optional: multiply to thousands
+    })
+  );
+
+  return (
+    <div className="w-full h-full p-1 flex flex-col items-center">
+      <h2 className="text-lg font-semibold text-center mb-2">License Types</h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart
+          data={data}
+          margin={{ top: 10, right: 30, left: 0, bottom: 80 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="name"
+            className="text-sm"
+            tickLine={false}
+            interval={0}
+            padding={{ left: 10, right: 10 }}
+            dy={20}
+          />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" barSize={60}>
+            {data?.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export { LicenseBarChart, LicenseBarChart2 };

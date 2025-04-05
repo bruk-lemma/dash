@@ -30,7 +30,7 @@ type Props = {
   data: StationData[];
 };
 
-export default function StudentExamChart({ data }: Props) {
+export default function StudentsExamChart({ data }: Props) {
   return (
     <div className="w-full h-[400px] bg-white p-4 rounded-lg ">
       <h2 className="text-lg font-semibold text-center mb-4">
