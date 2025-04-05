@@ -91,11 +91,11 @@ export default function Page() {
     isLoading: licenseIsLoading,
     error: licenseError,
   } = useGetStationLicenseType();
-  const {
-    data: schoolData,
-    isLoading: schoolIsLoading,
-    error: schoolError,
-  } = useGetStationSchoolData();
+  // const {
+  //   data: schoolData,
+  //   isLoading: schoolIsLoading,
+  //   error: schoolError,
+  // } = useGetStationSchoolData();
   interface SchoolData {
     name: string;
     totalStudents: number;
@@ -103,14 +103,14 @@ export default function Page() {
     failedStudents: number;
   }
 
-  const schoolsComparisonData = schoolData?.map(
-    ({ name, totalStudents, passedStudents, failedStudents }: SchoolData) => ({
-      name,
-      total: totalStudents,
-      passed: passedStudents,
-      failed: failedStudents,
-    })
-  );
+  // const schoolsComparisonData = schoolData?.map(
+  //   ({ name, totalStudents, passedStudents, failedStudents }: SchoolData) => ({
+  //     name,
+  //     total: totalStudents,
+  //     passed: passedStudents,
+  //     failed: failedStudents,
+  //   })
+  // );
 
   const {
     data: regionalStationData,
@@ -243,7 +243,7 @@ export default function Page() {
           />
           <LicenseTypeCard2
             data={regionLicenseData}
-            loading={licenseIsLoading}
+            loading={regionLicenseIsLoading}
           />
         </div>
 
