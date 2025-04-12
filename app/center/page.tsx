@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Card from "@/components/card";
 import { Cog, Users, KeyRound, Loader, Loader2 } from "lucide-react";
 import StudentGenderChart from "@/components/stuchart";
@@ -17,13 +17,41 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { useGetSchool } from "@/api/data";
-
+import {
+  useGetSationPerformance,
+  useGetSchool,
+  useGetSchoolPerformance,
+} from "@/api/data";
+const monthOptions = [
+  "All Months",
+  ...Array.from({ length: 12 }, (_, i) =>
+    new Date(2025, i, 1).toLocaleString("default", { month: "long" })
+  ),
+];
 export default function Page() {
   const router = useRouter();
   const { data, isLoading, error } = useGetSchool(1);
-  const [selectedMonth, setSelectedMonth] = useState("All");
+  const [selectedMonth, setSelectedMonth] = useState(monthOptions[0]);
   console.log("school data", data);
+
+  const monthIndex = monthOptions.indexOf(selectedMonth) - 1;
+  const selectedYear = 2025;
+  const schoolId = 1;
+
+  const startDate =
+    selectedMonth === "All Months"
+      ? `${selectedYear}-01-01`
+      : `${selectedYear}-${String(monthIndex + 1).padStart(2, "0")}-01`;
+
+  const endDate =
+    selectedMonth === "All Months"
+      ? `${selectedYear}-12-31`
+      : new Date(selectedYear, monthIndex + 1, 0).toISOString().split("T")[0]; // Last day of selected month
+  const {
+    data: school,
+    isLoading: schoolLoading,
+    error: schoolError,
+  } = useGetSchoolPerformance(schoolId, startDate, endDate);
 
   // const school = data;
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -32,12 +60,28 @@ export default function Page() {
 
   const licenseTypeData = Object.entries(data?.licenseType || {}).reduce(
     (acc, [key, value]) => {
-      acc[key] = value;
+      acc[key] = value as number;
       return acc;
     },
     {} as Record<string, number>
   );
+  const chartData = useMemo(() => {
+    console.log("school data is", school);
+    if (!school) return [];
 
+    const passed = school.passed || 0;
+    const failed = school.failed || 0;
+    const total = school.total || 0;
+
+    return [
+      {
+        name: selectedMonth,
+        total,
+        passed,
+        failed,
+      },
+    ];
+  }, [school, selectedMonth]);
   const studentGenderData = {
     maleCount: data?.maleStudents.total || 0,
     femaleCount: data?.femaleStudents.total || 0,
@@ -68,22 +112,6 @@ export default function Page() {
         createdAt: student.createdAt || "N/A", // Provide a default value for createdAt
       })
     ) || [];
-
-  const monthOptions = [
-    "All",
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
   const filteredStudents =
     selectedMonth === "All"
@@ -232,41 +260,74 @@ export default function Page() {
           </div>
         )}
         {/* Month Selection for Line Chart */}
-        <div className="flex justify-between items-center mb-4">
-          <label className="font-semibold">Select Month:</label>
-          <select
-            className="border px-4 py-2 rounded-md bg-white"
-            value={selectedMonth}
-            onChange={handleMonthChange}
-          >
-            {monthOptions.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
 
         {/* Line Chart to show Total, Passed, Failed Students */}
-        <div className="border p-5 max-lg:p-1 w-full">
+        <div className="border p-5 w-full h-[500px]">
           <h2 className="text-xl font-bold text-center mb-4">
-            Students Comparison (Total vs Passed vs Failed)
+            School Performances
           </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={lineChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" padding={{ left: 20, right: 20 }} />
-              <YAxis padding={{ top: 20, bottom: 20 }} />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#8884d8"
-                activeDot={{ r: 18 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+
+          <div className="flex justify-between items-center mb-4">
+            <label className="font-semibold">Select Month:</label>
+            <select
+              className="border px-4 py-2 rounded-md bg-white"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              {monthOptions.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {schoolLoading ? (
+            <div className="flex justify-center items-center h-48">
+              <Loader size={32} className="animate-spin" color="black" />
+            </div>
+          ) : schoolError ? (
+            <div className="text-center text-red-500">
+              Error loading school data.
+            </div>
+          ) : chartData &&
+            chartData.some(
+              (entry) => entry.total > 0 || entry.passed > 0 || entry.failed > 0
+            ) ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="total"
+                  fill="#8884d8"
+                  name="Total Students"
+                  barSize={30}
+                />
+                <Bar
+                  dataKey="passed"
+                  fill="#4caf50"
+                  name="Passed Students"
+                  barSize={30}
+                />
+                <Bar
+                  dataKey="failed"
+                  fill="#e74c3c"
+                  name="Failed Students"
+                  barSize={30}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="text-center flex items-center justify-center">
+              <p>
+                No data available for {selectedMonth} of {selectedYear}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

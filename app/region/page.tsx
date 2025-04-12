@@ -14,7 +14,6 @@ import {
   Bar,
   BarChart,
 } from "recharts";
-// Generate month options starting from January (0)
 const monthOptions = [
   "All Months",
   ...Array.from({ length: 12 }, (_, i) =>
@@ -86,16 +85,6 @@ export default function Page() {
     error: regionTotalError,
   } = useGetRegionTotalData();
 
-  const {
-    data: stationLicenseData,
-    isLoading: licenseIsLoading,
-    error: licenseError,
-  } = useGetStationLicenseType();
-  // const {
-  //   data: schoolData,
-  //   isLoading: schoolIsLoading,
-  //   error: schoolError,
-  // } = useGetStationSchoolData();
   interface SchoolData {
     name: string;
     totalStudents: number;
@@ -103,23 +92,12 @@ export default function Page() {
     failedStudents: number;
   }
 
-  // const schoolsComparisonData = schoolData?.map(
-  //   ({ name, totalStudents, passedStudents, failedStudents }: SchoolData) => ({
-  //     name,
-  //     total: totalStudents,
-  //     passed: passedStudents,
-  //     failed: failedStudents,
-  //   })
-  // );
-
   const {
     data: regionalStationData,
     isLoading: regionalStationIsLoading,
     error: regionalStationError,
   } = usegetRegionStationData();
 
-  //   console.log("schoolData", schoolData);
-  //   console.log("region license datais...", regionLicenseData);
   console.log("this is regional station data", regionalStationData);
 
   const [selectedMonth, setSelectedMonth] = useState("All");
@@ -166,14 +144,6 @@ export default function Page() {
     },
   ];
 
-  // const chartData = [
-  //   {
-  //     name: stationData?.name,
-  //     passedStudents: stationData?.students?.passed?.total || 0,
-  //     failedStudents: stationData?.students?.failed?.total || 0,
-  //     totalStudents: stationData?.students?.total || 0,
-  //   },
-  // ];
   useEffect(() => {
     if (
       regionStationData?.stations?.length > 0 &&
@@ -213,10 +183,10 @@ export default function Page() {
           />
           <Card
             name="Total Schools"
-            value={regionSchoolData?.count}
+            value={regionStationData?.schoolCount}
             Icon={Home}
-            loading={regionSchoolIsLoading}
-            error={regionSchoolError?.message}
+            loading={regionStationIsLoading}
+            error={regionStationError?.message}
           />
           <Card
             name="Total Students"
@@ -280,21 +250,6 @@ export default function Page() {
               />
             )}
           </div>
-          {/* <div className="flex gap-4">
-            <div className="border items-center justify-center p-5 w-full">
-              <h3 className="text-lg font-semibold text-gray-600 text-center">
-                Total Gender Distribution
-              </h3>
-              <StudentGenderChart
-                male={studentGenderData.maleCount}
-                female={studentGenderData.femaleCount}
-              />
-            </div>
-
-   
-
-           
-          </div> */}
         </div>
         <div className="flex justify-between items-center mb-4"></div>
 
@@ -305,7 +260,6 @@ export default function Page() {
         />
 
         <div>
-          {/* <LicenseTypeCard data={stationLicenseData} /> */}
           <LicenseBarChart2 licenseTypeData={regionLicenseData} />
         </div>
         <div className="border p-5 max-lg:p-2 w-full mt-5 overflow-x-auto">

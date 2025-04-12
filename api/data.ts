@@ -26,23 +26,23 @@ const school = {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const getTotal = async () => {
-  const response = await axios.get(`${API_BASE_URL}/analytics/region/overall`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return response.data;
-};
+// export const getTotal = async () => {
+//   const response = await axios.get(`${API_BASE_URL}/analytics/region/overall`, {
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   });
+//   return response.data;
+// };
 
-export const getRegions = async () => {
-  const response = await axios.get(`${API_BASE_URL}/analytics/all/region`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return response.data;
-};
+// export const getRegions = async () => {
+//   const response = await axios.get(`${API_BASE_URL}/analytics/all/region`, {
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   });
+//   return response.data;
+// };
 
 export const useGetSchool = (id: any) => {
   const { data, isLoading, error } = useQuery({
@@ -54,7 +54,7 @@ export const useGetSchool = (id: any) => {
           "Content-Type": "application/json",
         },
       });
-      return school;
+      return response.data;
     },
   });
 
@@ -271,6 +271,34 @@ export const useGetSationPerformance = (
 
       const response = await axios.get(
         `${API_BASE_URL}/astation/${id}?${params.toString()}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.data;
+    },
+  });
+
+  return { data, isLoading, error };
+};
+export const useGetSchoolPerformance = (
+  id: any,
+  startDate: any,
+  endDate: any
+) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["rstation", id, startDate, endDate],
+    enabled: !!id,
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (startDate) params.append("startDate", startDate);
+      if (endDate) params.append("endDate", endDate);
+
+      const response = await axios.get(
+        `${API_BASE_URL}/aschool/${id}?${params.toString()}`,
         {
           headers: {
             "Content-Type": "application/json",

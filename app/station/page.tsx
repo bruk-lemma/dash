@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Card from "@/components/card";
 import { Cog, Users, Home, Car, Loader, KeyRound } from "lucide-react";
 import {
@@ -20,6 +20,7 @@ import StudentGenderChart from "@/components/stuchart";
 import { useRouter } from "next/navigation";
 import {
   useGetSchool,
+  useGetSchoolPerformance,
   useGetStation,
   useGetStationLicenseType,
   useGetStationSchoolData,
@@ -30,8 +31,36 @@ import StationWiseStudentPerformance from "@/components/stationBymonth";
 
 export default function Page() {
   const router = useRouter();
-  const [selectedSchool, setSelectedSchool] = useState("All");
   const { data: stationData, isLoading, error } = useGetStation(1);
+  const [selectedSchool, setSelectedSchool] = useState(
+    stationData?.schools?.[0]?.id || "All"
+  );
+  const {
+    data: schoolDetailChartData,
+    isLoading: schoolChartDataLoading,
+    error: schoolChartDataError,
+  } = useGetSchoolPerformance(selectedSchool, "2025-01-01", "2025-12-31");
+
+  const schoolChartData = useMemo(() => {
+    if (!schoolDetailChartData) {
+      return [];
+    }
+    console.log("the data of selected school", schoolDetailChartData);
+    const name = schoolDetailChartData.name || "Selected School"; // Use a default name if not available
+    const passed = schoolDetailChartData.passed || 0;
+    const failed = schoolDetailChartData.failed || 0;
+    const total = schoolDetailChartData.total || 0;
+
+    return [
+      {
+        name, // Add a meaningful name here
+        total,
+        passed,
+        failed,
+      },
+    ];
+  }, [schoolDetailChartData, selectedSchool]);
+
   console.log("station is loading", isLoading);
   const {
     data: stationLicenseData,
@@ -222,18 +251,9 @@ export default function Page() {
               </select>
             </div>
           </div>
+          {}
           <SchoolChart
-            school={
-              schoolData
-                ? {
-                    students: {
-                      total: schoolData.total,
-                      passed: { total: schoolData.passed },
-                      failed: { total: schoolData.failed },
-                    },
-                  }
-                : null
-            }
+            schoolChartData={schoolChartData}
             isLoading={schoolIsLoading}
           />
         </div>
@@ -284,16 +304,15 @@ function LicenseTypeCard({ data }: LicenseTypeCardProps) {
 }
 
 function SchoolChart({
-  school,
+  schoolChartData,
   isLoading,
 }: {
-  school: {
-    students?: {
-      total?: number;
-      passed?: { total?: number };
-      failed?: { total?: number };
-    };
-  } | null;
+  schoolChartData: {
+    name: string;
+    total: number;
+    passed: number;
+    failed: number;
+  }[];
   isLoading: boolean;
 }) {
   if (isLoading) {
@@ -304,62 +323,40 @@ function SchoolChart({
     );
   }
 
-  const hasData =
-    school &&
-    school?.students &&
-    ((school?.students?.total ?? 0) > 0 ||
-      (school.students.passed?.total ?? 0) > 0 ||
-      (school.students.failed?.total ?? 0) > 0);
-
-  if (!hasData) {
-    return (
-      <div className="w-full h-[400px] flex items-center justify-center text-gray-500">
-        No data available
-      </div>
-    );
-  }
-
-  const schoolChartData = [
-    {
-      name: "Total Students",
-      total: school?.students?.total,
-      passed: school?.students?.passed?.total,
-      failed: school?.students?.failed?.total,
-    },
-  ];
-
   return (
     <div style={{ height: "400px" }} className="w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={schoolChartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" padding={{ left: 20, right: 20 }} />
-          <YAxis padding={{ top: 20, bottom: 20 }} />
-          <Tooltip />
-          <Legend />
-          <Line
-            type="basis"
-            dataKey="total"
-            stroke="#8884d8"
-            activeDot={{ r: 8 }}
-            name="Total Students"
-          />
-          <Line
-            type="monotone"
-            dataKey="passed"
-            stroke="#82ca9d"
-            activeDot={{ r: 8 }}
-            name="Passed Students"
-          />
-          <Line
-            type="monotone"
-            dataKey="failed"
-            stroke="#ff7300"
-            activeDot={{ r: 8 }}
-            name="Failed Students"
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {schoolChartData.length === 0 ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <p className="text-black">No data available</p>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={schoolChartData}>
+            <XAxis padding={{ left: 20, right: 20 }} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="total"
+              fill="#8884d8"
+              name="Total Students"
+              barSize={50}
+            />
+            <Bar
+              dataKey="passed"
+              fill="#82ca9d"
+              name="Passed Students"
+              barSize={50}
+            />
+            <Bar
+              dataKey="failed"
+              fill="#ff7300"
+              name="Failed Students"
+              barSize={50}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }
