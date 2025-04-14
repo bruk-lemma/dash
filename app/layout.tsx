@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/lib/providers/queryProvider";
 import Navbar from "@/components/navbar";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -20,12 +21,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
         <div className="h-screen ">
-          <QueryProvider>
-            <div className="bg-white max-w-[99%] m-auto">
-              {/* <Navbar /> */}
-              {children}
-            </div>
-          </QueryProvider>
+          <AuthProvider>
+            <QueryProvider>
+              <div className="bg-white max-w-[99%] m-auto">
+                {/* <Navbar /> */}
+                {children}
+              </div>
+            </QueryProvider>
+          </AuthProvider>
         </div>
       </body>
     </html>
