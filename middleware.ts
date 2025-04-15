@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
-export function middleware(request: NextRequest) {
+const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!);
+
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
 
   console.log("----token-----");
@@ -11,17 +13,16 @@ export function middleware(request: NextRequest) {
   if (!token) {
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
+
   try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
-      id: string;
-      userType: "REGION" | "STATION" | "SCHOOL";
-    };
+    const { payload } = await jwtVerify(token, secret);
+
     let redirectPath = "/dashboard";
-    if (decoded.userType === "REGION") {
+    if (payload.userType === "REGION") {
       redirectPath = "/region";
-    } else if (decoded.userType === "STATION") {
+    } else if (payload.userType === "STATION") {
       redirectPath = "/station";
-    } else if (decoded.userType === "SCHOOL") {
+    } else if (payload.userType === "SCHOOL") {
       redirectPath = "/center";
     }
 
@@ -34,7 +35,7 @@ export function middleware(request: NextRequest) {
 
     return NextResponse.next();
   } catch (error) {
-    console.error("JWT verification error: ", error);
+    console.error("JWT verification failed:", error);
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
 }
