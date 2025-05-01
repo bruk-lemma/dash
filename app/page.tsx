@@ -1,5 +1,6 @@
 "use client";
 
+import Login from "@/components/login";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
   return (
     <div className="flex  gap-12 items-center justify-center h-screen ">
       <div className="flex flex-col items-center gap-10">
+        {/* <Login /> */}
         <h2 className="text-black font-normal text-2xl ">
           Welcome ! Click the button below to go to the Dashboard
         </h2>

@@ -32,7 +32,7 @@ export default function StudentCard({
       {/* Student Statistics */}
       <div className="space-y-3">
         <div className="flex justify-between">
-          <span className="text-sm text-gray-600">Total Students</span>
+          <span className="text-sm text-gray-600">Registered Students</span>
           <span className="font-semibold text-gray-800">{total}</span>
         </div>
         <div className="flex justify-between">

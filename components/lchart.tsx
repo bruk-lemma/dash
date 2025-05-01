@@ -12,7 +12,6 @@ import {
   Cell,
 } from "recharts";
 
-// const COLORS = ["#2563EB", "#1D4ED8", "#0F766E", "#0EA5E9", "#0284C7"];
 const COLORS = ["#7B1FA2", "#6A1B9A", "#8E24AA", "#9C27B0", "#AB47BC"];
 
 function LicenseBarChart({

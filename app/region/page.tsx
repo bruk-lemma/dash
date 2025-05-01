@@ -27,6 +27,7 @@ import {
   usegetRegionStationData,
   useGetRegionStudentData,
   useGetRegionTotalData,
+  useGetReportofStations,
   useGetSchoolsInRegion,
   useGetStation,
   useGetStationLicenseType,
@@ -85,6 +86,12 @@ export default function Page() {
     error: regionTotalError,
   } = useGetRegionTotalData();
 
+  const {
+    data: chartData,
+    isLoading: chartIsLoading,
+    error: chartError,
+  } = useGetReportofStations();
+
   interface SchoolData {
     name: string;
     totalStudents: number;
@@ -116,7 +123,7 @@ export default function Page() {
 
   const lineChartData = [
     {
-      name: "Total Students",
+      name: "Registered Students",
       value: regionTotalData?.students?.total,
     },
     {
@@ -166,9 +173,11 @@ export default function Page() {
             </button>
           </div>
           <div className="flex items-center justify-center flex-1">
-            <p className="text-center text-2xl font-bold">{RegionData?.name}</p>
+            <p className="text-center text-2xl font-bold">
+              {regionStationData?.name}
+            </p>
           </div>
-          <div className="w-[100px]"></div>
+          {/* <div className="w-[100px]"></div> */}
         </div>
 
         <div className="grid grid-cols-4 max-lg:grid-cols-1 justify-between  gap-3 mt-20">
@@ -189,7 +198,7 @@ export default function Page() {
             error={regionStationError?.message}
           />
           <Card
-            name="Total Students"
+            name="Registered Students"
             value={regionStudentData?.count}
             Icon={Users}
             loading={regionStudentIsLoading}
@@ -212,8 +221,9 @@ export default function Page() {
             female={regionTotalData?.students.failed.female}
           />
           <LicenseTypeCard2
-            data={regionLicenseData}
-            loading={regionLicenseIsLoading}
+            selectedStation={1}
+            // data={regionLicenseData}
+            // loading={regionLicenseIsLoading}
           />
         </div>
 
@@ -269,7 +279,7 @@ export default function Page() {
 
           {/* Station Filter Dropdown */}
           <div className="flex justify-center mb-4">
-            <select
+            {/* <select
               className="border border-gray-300 rounded px-4 py-2"
               value={selectedStation}
               onChange={(e) => setSelectedStation(e.target.value)}
@@ -279,10 +289,52 @@ export default function Page() {
                   {name.name}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
-
-          <StationChart station={stationData} isLoading={isLoading} />
+          {chartIsLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader size={32} className="animate-spin" color="black" />
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center h-full">
+              <p>Error Fetching data</p>
+            </div>
+          ) : chartData && chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={chartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="total"
+                  stackId="a"
+                  fill="#8884d8"
+                  name="Total Students"
+                  barSize={50}
+                />
+                <Bar
+                  dataKey="failed"
+                  stackId="a"
+                  fill="#ff7300"
+                  name="Failed Students"
+                  barSize={50}
+                />
+                <Bar
+                  dataKey="passed"
+                  stackId="a"
+                  fill="#82ca9d"
+                  name="Passed Students"
+                  barSize={50}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p>No data available</p>
+            </div>
+          )}
+          {/* <StationChart station={stationData} isLoading={isLoading} /> */}
         </div>
 
         <div>

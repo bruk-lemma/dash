@@ -125,7 +125,7 @@ export default function Page() {
 
   const lineChartData = [
     {
-      name: "Total Students",
+      name: "Registered Students",
       value: filteredStudents.length,
     },
     {
@@ -161,7 +161,7 @@ export default function Page() {
       {/* Main Content */}
       <div className="flex justify-between gap-3 mt-20 max-lg:flex-col ">
         <Card
-          name="Total Students"
+          name="Registered Students"
           value={data?.total ?? 0}
           Icon={Users}
           male={studentGenderData.maleCount}
@@ -193,7 +193,7 @@ export default function Page() {
           <div className="border items-center justify-center p-5 w-full">
             <div className="flex items-center justify-between">
               <p className="text-lg font-semibold text-gray-600 text-center">
-                Total Students
+                Registred Students
               </p>
               <p className="font-semibold text-purple-600">
                 Total :{" "}
@@ -304,7 +304,7 @@ export default function Page() {
                 <Bar
                   dataKey="total"
                   fill="#8884d8"
-                  name="Total Students"
+                  name="Registered Students"
                   barSize={30}
                 />
                 <Bar
@@ -417,7 +417,7 @@ function SchoolPerformanceBarChart({
           <Bar
             dataKey="total"
             fill="#8884d8"
-            name="Total Students"
+            name="Registered Students"
             barSize={50}
           />
           <Bar

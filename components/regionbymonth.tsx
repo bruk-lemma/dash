@@ -62,9 +62,7 @@ export default function RegionWiseStudentPerformance() {
 
   return (
     <div className="border p-5 w-full h-[500px]">
-      <h2 className="text-xl font-bold text-center mb-4">
-        Region Performancess
-      </h2>
+      <h2 className="text-xl font-bold text-center mb-4">Region Performance</h2>
 
       <div className="flex justify-between items-center mb-4">
         <label className="font-semibold">Select Month:</label>
@@ -103,7 +101,7 @@ export default function RegionWiseStudentPerformance() {
             <Bar
               dataKey="total"
               fill="#8884d8"
-              name="Total Students"
+              name="Registred Students"
               barSize={30}
             />
             <Bar

@@ -1,3 +1,4 @@
+import { useGetStationLicenseType } from "@/api/data";
 import { KeyRound, Loader } from "lucide-react";
 
 interface LicenseData {
@@ -5,21 +6,31 @@ interface LicenseData {
 }
 
 interface LicenseTypeCardProps {
-  data: LicenseData[];
-  loading: boolean;
+  //data: LicenseData[];
+  selectedStation: any;
+  // loading: boolean;
 }
 
 export default function LicenseTypeCard({
-  data,
-  loading,
-}: LicenseTypeCardProps) {
-  console.log("station license data", data);
+  //data,
+  selectedStation,
+}: //loading,
+LicenseTypeCardProps) {
+  const {
+    data: stationLicenseData,
+    isLoading: licenseIsLoading,
+    error: licenseError,
+  } = useGetStationLicenseType(selectedStation);
+  //console.log("station license data", data);
 
   // Convert object to array
-  const dataArray = Object.entries(data || {}).map(([licenseType, count]) => ({
-    licenseType,
-    count: typeof count === "number" ? count * 1000 : 0, // Map to thousands, default to 0 if not a number
-  }));
+  const dataArray = Object.entries(stationLicenseData || {}).map(
+    ([licenseType, count]) => ({
+      licenseType,
+      count: typeof count === "number" ? count : 0, // Map to thousands, default to 0 if not a number
+    })
+  );
+  console.log("station id on license carsd is", selectedStation);
 
   return (
     <div className="bg-white shadow-md rounded-lg p-5 ">
@@ -28,7 +39,7 @@ export default function LicenseTypeCard({
         <KeyRound size={28} className="text-gray-600" />
       </div>
 
-      {loading ? (
+      {licenseIsLoading ? (
         <div className="animate-pulse flex justify-evenly items-center px-3 py-2 rounded-md ">
           <Loader
             size={32}
@@ -50,7 +61,7 @@ export default function LicenseTypeCard({
               {licenseType}
             </span>
             <span className="text-gray-900 font-semibold text-xs ml-2">
-              {count.toLocaleString()} {/* Format as 21,000 */}
+              {count} {/* Format as 21,000 */}
             </span>
           </div>
         ))}

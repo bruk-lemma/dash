@@ -19,11 +19,13 @@ import StudentGenderChart from "@/components/stuchart";
 
 import { useRouter } from "next/navigation";
 import {
+  useGetReportofSchools,
   useGetSchool,
   useGetSchoolPerformance,
   useGetStation,
   useGetStationLicenseType,
   useGetStationSchoolData,
+  useGetStationsInRegion,
 } from "@/api/data";
 import LicenseTypeCard2 from "@/components/license2";
 import { LicenseBarChart2 } from "@/components/lchart";
@@ -31,7 +33,27 @@ import StationWiseStudentPerformance from "@/components/stationBymonth";
 
 export default function Page() {
   const router = useRouter();
-  const { data: stationData, isLoading, error } = useGetStation(1);
+  const {
+    data: regionStationData,
+    isLoading: regionStationIsLoading,
+    error: regionStationError,
+  } = useGetStationsInRegion();
+
+  const [selectedStation, setSelectedStation] = useState(
+    regionStationData?.stations?.[0]?.id || 1
+  );
+  const {
+    data: chartData,
+    isLoading: chartIsLoading,
+    error: chartError,
+  } = useGetReportofSchools(selectedStation);
+  console.log("selected station", selectedStation);
+  const {
+    data: stationData,
+    isLoading,
+    error,
+  } = useGetStation(selectedStation);
+
   const [selectedSchool, setSelectedSchool] = useState(
     stationData?.schools?.[0]?.id || "All"
   );
@@ -66,7 +88,7 @@ export default function Page() {
     data: stationLicenseData,
     isLoading: licenseIsLoading,
     error: licenseError,
-  } = useGetStationLicenseType();
+  } = useGetStationLicenseType(selectedStation);
 
   const {
     data: schoolData,
@@ -97,7 +119,7 @@ export default function Page() {
 
   const lineChartData = [
     {
-      name: "Total Students",
+      name: "Registered Students",
       value: stationData?.students?.total,
     },
     {
@@ -123,10 +145,24 @@ export default function Page() {
               ← Back
             </button>
           </div>
-          <div className="flex items-center justify-center flex-1 max-lg:items-start">
+
+          <div className="flex items-center justify-center gap-10 flex-1 max-lg:items-start">
             <p className="text-center text-2xl max-lg:text-lg font-bold">
               {stationData?.name}
             </p>
+            <div className="flex justify-center mb-4">
+              <select
+                className="border border-gray-300 rounded px-4 py-2"
+                value={selectedStation}
+                onChange={(e) => setSelectedStation(e.target.value)}
+              >
+                {regionStationData?.stations?.map((name: any) => (
+                  <option key={name.id} value={name.id}>
+                    {name.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -141,7 +177,7 @@ export default function Page() {
             nav="/center"
           />
           <Card
-            name="Total Students"
+            name="Registered Students"
             value={stationData?.students?.total}
             Icon={Users}
             loading={isLoading}
@@ -167,8 +203,9 @@ export default function Page() {
             loading={isLoading}
           />
           <LicenseTypeCard2
-            data={stationLicenseData}
-            loading={licenseIsLoading}
+            selectedStation={selectedStation}
+            //data={stationLicenseData}
+            //loading={licenseIsLoading}
           />
         </div>
 
@@ -236,7 +273,7 @@ export default function Page() {
           {/* Station Filter Dropdown */}
           <div className="flex flex-col justify-center mb-4">
             <div className="flex justify-end">
-              <select
+              {/* <select
                 className="border border-gray-300 rounded px-4 py-2"
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
@@ -248,17 +285,60 @@ export default function Page() {
                     {name.name}
                   </option>
                 ))}
-              </select>
+              </select> */}
             </div>
           </div>
+          {chartIsLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader size={32} className="animate-spin" color="black" />
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center h-full">
+              <p>Error Fetching data</p>
+            </div>
+          ) : chartData && chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={chartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="total"
+                  stackId="a"
+                  fill="#8884d8"
+                  name="Registerd Students"
+                  barSize={50}
+                />
+                <Bar
+                  dataKey="failed"
+                  stackId="a"
+                  fill="#ff7300"
+                  name="Failed Students"
+                  barSize={50}
+                />
+                <Bar
+                  dataKey="passed"
+                  stackId="a"
+                  fill="#82ca9d"
+                  name="Passed Students"
+                  barSize={50}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p>No data available</p>
+            </div>
+          )}
           {}
-          <SchoolChart
+          {/* <SchoolChart
             schoolChartData={schoolChartData}
             isLoading={schoolIsLoading}
-          />
+          /> */}
         </div>
         <div>
-          <StationWiseStudentPerformance />
+          <StationWiseStudentPerformance stationId={selectedStation} />
         </div>
       </div>
     </>
@@ -339,7 +419,7 @@ function SchoolChart({
             <Bar
               dataKey="total"
               fill="#8884d8"
-              name="Total Students"
+              name="Registered Students"
               barSize={50}
             />
             <Bar
@@ -376,6 +456,9 @@ function StudentPerformanceBarChart({
   }
   return (
     <div className="w-full h-[300px]">
+      <h2 className="text-xl font-bold text-center mb-4">
+        Overall Station Performance
+      </h2>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

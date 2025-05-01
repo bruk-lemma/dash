@@ -1,5 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { toast } from "sonner";
+
+import { log } from "console";
 const school = {
   id: 68,
   name: "Bob training school",
@@ -98,12 +101,50 @@ export const useGetStation = (id: any) => {
   return { data, isLoading, error };
 };
 
-export const useGetStationLicenseType = () => {
+export const useGetStationLicenseType = (id: any) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["stationLicenseType"],
+    queryKey: ["stationLicenseType", id],
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/station/license-count/1`,
+        `${API_BASE_URL}/station/license-count/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+
+  return { data, isLoading, error };
+};
+
+export const useGetReportofStations = () => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["stationsreport"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${API_BASE_URL}/aregion/student-report/1`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+
+  return { data, isLoading, error };
+};
+
+export const useGetReportofSchools = (id: any) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["schoolsreport", id],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${API_BASE_URL}/astation/student-report/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -242,7 +283,7 @@ export const useGetRegionPerformance = (
       if (endDate) params.append("endDate", endDate);
 
       const response = await axios.get(
-        `${API_BASE_URL}/aregion/${id}?${params.toString()}`,
+        `${API_BASE_URL}/aregion/student-report/${id}?${params.toString()}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -266,8 +307,17 @@ export const useGetSationPerformance = (
     enabled: !!id,
     queryFn: async () => {
       const params = new URLSearchParams();
+
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
+      console.log(
+        "stationid..........",
+        id,
+        "start data",
+        startDate,
+        "endDate",
+        endDate
+      );
 
       const response = await axios.get(
         `${API_BASE_URL}/astation/${id}?${params.toString()}`,
@@ -361,4 +411,36 @@ export const useGetRegionStudentData = () => {
     },
   });
   return { data, isLoading, error };
+};
+
+export const useGetLogin = () => {
+  const mutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await axios.post(`${API_BASE_URL}/login`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      const { token } = data;
+      if (token) {
+        document.cookie = `auth_token=${token}; path=/; max-age=86400;`;
+        toast.success("Login successful");
+        window.location.href = "/";
+      } else {
+        toast.error("Invalid credentials");
+      }
+    },
+    onError: (error) => {
+      toast.error("Login failed");
+      console.error("Login error:", error);
+    },
+  });
+  return {
+    login: mutation.mutate,
+    isLoading: mutation.isPending,
+    error: mutation.error,
+  };
 };
