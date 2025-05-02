@@ -37,7 +37,7 @@ import path from "path";
 export default function Page() {
   const router = useRouter();
   const { user } = useAuth(); // Access user from AuthContext
-  const regionId = user?.region?.id; // Get the region ID from the user object
+  const regionId = user?.details?.id; // Get the region ID from the user object
   const {
     data: regionStationData,
     isLoading: regionStationIsLoading,
@@ -45,10 +45,10 @@ export default function Page() {
   } = useGetStationsInRegion(regionId);
 
   const [selectedStation, setSelectedStation] = useState(
-    regionStationData?.stations?.[0]?.id || 1
+    regionStationData?.stations?.[0]?.id
   );
 
-  setCookie(null, "selectedStation", selectedStation.toString(), {
+  setCookie(null, "selectedStation", selectedStation, {
     maxAge: 30 * 24 * 60 * 60, // 30 days
     path: "/",
   });

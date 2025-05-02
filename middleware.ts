@@ -35,6 +35,7 @@
 // export const config = {
 //   matcher: ["/((?!_next|static|favicon.ico).*)"],
 // };
+
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";

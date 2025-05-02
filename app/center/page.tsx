@@ -464,19 +464,19 @@ function SchoolPerformanceBarChart({
             dataKey="total"
             fill="#8884d8"
             name="Registered Students"
-            barSize={50}
+            barSize={30}
           />
           <Bar
             dataKey="passed"
             fill="#4CAF50"
             name="Passed Students"
-            barSize={50}
+            barSize={30}
           />
           <Bar
             dataKey="failed"
             fill="#FF5722"
             name="Failed Students"
-            barSize={50}
+            barSize={30}
           />
         </BarChart>
       </ResponsiveContainer>

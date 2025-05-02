@@ -45,7 +45,7 @@ function LicenseBarChart({
           <YAxis />
           <Tooltip />
           {/* <Legend /> */}
-          <Bar dataKey="value" barSize={60}>
+          <Bar dataKey="value" barSize={30}>
             {" "}
             {/* Increased bar size */}
             {data.map((_, index) => (

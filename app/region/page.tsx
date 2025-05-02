@@ -62,7 +62,7 @@ export default function Page() {
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImVtYWlsIjoic2lkYW1hQGdtYWlsLmNvbSIsIm5hbWUiOiJTaWRhbWEiLCJ1c2VyVHlwZSI6IlJFR0lPTiIsInByaXZpbGVnZXMiOlsidmlld1N0dWRlbnQiLCJ2aWV3Um9sZSIsImNyZWF0ZVJvbGUiLCJ1cGRhdGVSb2xlIiwiZGVsZXRlUm9sZSIsInZpZXdXcml0dGVuRXhhbVJlcXVlc3QiLCJ2aWV3V3JpdHRlbkV4YW1SZXN1bHQiLCJ2aWV3RHJpdmluZ0V4YW1SZXF1ZXN0Iiwidmlld0RyaXZpbmdFeGFtUmVzdWx0Iiwidmlld1NjaG9vbCIsImNyZWF0ZVNjaG9vbCIsInVwZGF0ZVNjaG9vbCIsImRlbGV0ZVNjaG9vbCIsInZpZXdTdGF0aW9uIiwiY3JlYXRlU3RhdGlvbiIsInVwZGF0ZVN0YXRpb24iLCJkZWxldGVTdGF0aW9uIiwidmlld1VzZXIiLCJjcmVhdGVVc2VyIiwiZGVsZXRlVXNlciIsInZpZXdQcm9maWxlIiwidXBkYXRlUHJvZmlsZSIsInZpZXdQcmludGVkIiwiY3JlYXRlUHJpbnRlZCIsInZpZXdUb2JlUHJpbnRlZCIsInVwZGF0ZVRvYmVQcmludGVkIl0sInJlZ2lvbiI6eyJpZCI6MSwicmVnaW9uIjoiU2lkYW1hIn0sInN0YXRpb24iOm51bGwsInNjaG9vbCI6bnVsbCwiaWF0IjoxNzQ2MDk5MzU3LCJleHAiOjE3NDYyNzIxNTd9.XkT0Og6gJ_NP9GStC-ga0RFEpZ_HV_cxLDYgEx7PLAM";
   // localStorage.setItem("auth_token", auth);
   const { user } = useAuth(); // Access user from AuthContext
-  const regionId = user?.region?.id; // Get the region ID from the user object
+  const regionId = user?.details?.id; // Get the region ID from the user object
 
   const {
     data: RegionData,
@@ -195,7 +195,7 @@ export default function Page() {
           </div>
           <div className="flex items-center justify-center flex-1">
             <p className="text-center text-2xl font-bold">
-              {regionStationData?.name}
+              {/* {regionStationData?.name} */}
             </p>
           </div>
           {/* <div className="w-[100px]"></div> */}
