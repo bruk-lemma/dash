@@ -30,7 +30,7 @@ LicenseTypeCardProps) {
       count: typeof count === "number" ? count : 0, // Map to thousands, default to 0 if not a number
     })
   );
-  console.log("station id on license carsd is", selectedStation);
+  //console.log("station id on license carsd is", selectedStation);
 
   return (
     <div className="bg-white shadow-md rounded-lg p-5 ">

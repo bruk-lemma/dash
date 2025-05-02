@@ -21,7 +21,10 @@ import {
   useGetSationPerformance,
   useGetSchool,
   useGetSchoolPerformance,
+  useGetStation,
 } from "@/api/data";
+import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { parseCookies, setCookie } from "nookies";
 const monthOptions = [
   "All Months",
   ...Array.from({ length: 12 }, (_, i) =>
@@ -30,13 +33,41 @@ const monthOptions = [
 ];
 export default function Page() {
   const router = useRouter();
-  const { data, isLoading, error } = useGetSchool(1);
+
+  // const [selectedStation, setSelectedStation] = useState<string | null>();
+
+  // setCookie(null, "selectedStation", selectedStation || "", {
+  //   maxAge: 30 * 24 * 60 * 60, // 30 days
+  //   path: "/",
+  // });
+
+  // const selectedStation =
+  // useEffect(() => {
+  //   if (typeof window !== "undefined" && selectedStation) {
+  //     localStorage.setItem("selectedStation", selectedStation);
+  //   }
+  // }, [selectedStation]);
+  const cookies = parseCookies();
+  const selectedStation = cookies.selectedStation;
+
   const [selectedMonth, setSelectedMonth] = useState(monthOptions[0]);
-  console.log("school data", data);
+  const {
+    data: stationData,
+    isLoading: stationLoading,
+    error: stationError,
+  } = useGetStation(selectedStation);
+
+  const [selectedSchool, setSelectedSchool] = useState(
+    stationData?.schools?.[0]?.id
+  );
+  // console.log("school data", data);
 
   const monthIndex = monthOptions.indexOf(selectedMonth) - 1;
   const selectedYear = 2025;
-  const schoolId = 1;
+  //const schoolId = selectedSchool; //read stationid from local storage
+  //read stationid from local storage
+  const { data, isLoading, error } = useGetSchool(selectedSchool);
+  //console.log("the selected school is", selectedSchool);
 
   const startDate =
     selectedMonth === "All Months"
@@ -51,7 +82,7 @@ export default function Page() {
     data: school,
     isLoading: schoolLoading,
     error: schoolError,
-  } = useGetSchoolPerformance(schoolId, startDate, endDate);
+  } = useGetSchoolPerformance(selectedSchool, startDate, endDate);
 
   // const school = data;
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -66,7 +97,7 @@ export default function Page() {
     {} as Record<string, number>
   );
   const chartData = useMemo(() => {
-    console.log("school data is", school);
+    //console.log("school data is", school);
     if (!school) return [];
 
     const passed = school.passed || 0;
@@ -83,16 +114,16 @@ export default function Page() {
     ];
   }, [school, selectedMonth]);
   const studentGenderData = {
-    maleCount: data?.maleStudents.total || 0,
-    femaleCount: data?.femaleStudents.total || 0,
+    maleCount: data?.maleStudents?.total || 0,
+    femaleCount: data?.femaleStudents?.total || 0,
   };
 
   const studentExamData = {
     name: data?.name,
-    malePassed: data?.maleStudents.passed,
-    maleFailed: data?.maleStudents.failed,
-    femalePassed: data?.femaleStudents.passed,
-    femaleFailed: data?.femaleStudents.failed,
+    malePassed: data?.maleStudents?.passed,
+    maleFailed: data?.maleStudents?.failed,
+    femalePassed: data?.femaleStudents?.passed,
+    femaleFailed: data?.femaleStudents?.failed,
   };
 
   const allStudents: {
@@ -150,10 +181,25 @@ export default function Page() {
             ← Back
           </button>
         </div>
-        <div className="flex items-center justify-center flex-1">
+        <div className="flex items-center gap-6 justify-center flex-1">
           <p className="text-center text-2xl font-bold max-lg:text-lg ">
             {data?.name}
           </p>
+          <div className="flex justify-end">
+            <select
+              className="border border-gray-300 rounded px-4 py-2"
+              value={selectedSchool}
+              onChange={(e) => setSelectedSchool(e.target.value)}
+              //value={selectedStation}
+              //onChange={(e) => setSelectedStation(e.target.value)}
+            >
+              {stationData?.schools?.map((name: any) => (
+                <option key={name.id} value={name.id}>
+                  {name.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="w-[100px]"></div>
       </div>

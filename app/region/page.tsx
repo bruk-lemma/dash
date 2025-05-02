@@ -40,40 +40,60 @@ import { LicenseBarChart2 } from "@/components/lchart";
 import StationWiseStudentPerformance from "@/components/stationBymonth";
 import StudentGenderChart from "@/components/stuchart";
 import RegionWiseStudentPerformance from "@/components/regionbymonth";
+import { useAuth } from "@/context/AuthContext";
+import { set } from "mongoose";
+import { setCookie } from "nookies";
 
 export default function Page() {
   const router = useRouter();
   const [selectedStation, setSelectedStation] = useState<string | undefined>();
+  setCookie(null, "selectedStation", selectedStation || "", {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    path: "/",
+  });
+  // useEffect(() => {
+  //   if (typeof window !== "undefined" && selectedStation) {
+  //     localStorage.setItem("selectedStation", selectedStation.toString());
+  //   }
+  // }, [selectedStation]);
+  // document.cookie(
+  //   "auth_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImVtYWlsIjoic2lkYW1hQGdtYWlsLmNvbSIsIm5hbWUiOiJTaWRhbWEiLCJ1c2VyVHlwZSI6IlJFR0lPTiIsInByaXZpbGVnZXMiOlsidmlld1N0dWRlbnQiLCJ2aWV3Um9sZSIsImNyZWF0ZVJvbGUiLCJ1cGRhdGVSb2xlIiwiZGVsZXRlUm9sZSIsInZpZXdXcml0dGVuRXhhbVJlcXVlc3QiLCJ2aWV3V3JpdHRlbkV4YW1SZXN1bHQiLCJ2aWV3RHJpdmluZ0V4YW1SZXF1ZXN0Iiwidmlld0RyaXZpbmdFeGFtUmVzdWx0Iiwidmlld1NjaG9vbCIsImNyZWF0ZVNjaG9vbCIsInVwZGF0ZVNjaG9vbCIsImRlbGV0ZVNjaG9vbCIsInZpZXdTdGF0aW9uIiwiY3JlYXRlU3RhdGlvbiIsInVwZGF0ZVN0YXRpb24iLCJkZWxldGVTdGF0aW9uIiwidmlld1VzZXIiLCJjcmVhdGVVc2VyIiwiZGVsZXRlVXNlciIsInZpZXdQcm9maWxlIiwidXBkYXRlUHJvZmlsZSIsInZpZXdQcmludGVkIiwiY3JlYXRlUHJpbnRlZCIsInZpZXdUb2JlUHJpbnRlZCIsInVwZGF0ZVRvYmVQcmludGVkIl0sInJlZ2lvbiI6eyJpZCI6MSwicmVnaW9uIjoiU2lkYW1hIn0sInN0YXRpb24iOm51bGwsInNjaG9vbCI6bnVsbCwiaWF0IjoxNzQ2MDk5MzU3LCJleHAiOjE3NDYyNzIxNTd9.XkT0Og6gJ_NP9GStC-ga0RFEpZ_HV_cxLDYgEx7PLAM"
+  // );
+  // const auth =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImVtYWlsIjoic2lkYW1hQGdtYWlsLmNvbSIsIm5hbWUiOiJTaWRhbWEiLCJ1c2VyVHlwZSI6IlJFR0lPTiIsInByaXZpbGVnZXMiOlsidmlld1N0dWRlbnQiLCJ2aWV3Um9sZSIsImNyZWF0ZVJvbGUiLCJ1cGRhdGVSb2xlIiwiZGVsZXRlUm9sZSIsInZpZXdXcml0dGVuRXhhbVJlcXVlc3QiLCJ2aWV3V3JpdHRlbkV4YW1SZXN1bHQiLCJ2aWV3RHJpdmluZ0V4YW1SZXF1ZXN0Iiwidmlld0RyaXZpbmdFeGFtUmVzdWx0Iiwidmlld1NjaG9vbCIsImNyZWF0ZVNjaG9vbCIsInVwZGF0ZVNjaG9vbCIsImRlbGV0ZVNjaG9vbCIsInZpZXdTdGF0aW9uIiwiY3JlYXRlU3RhdGlvbiIsInVwZGF0ZVN0YXRpb24iLCJkZWxldGVTdGF0aW9uIiwidmlld1VzZXIiLCJjcmVhdGVVc2VyIiwiZGVsZXRlVXNlciIsInZpZXdQcm9maWxlIiwidXBkYXRlUHJvZmlsZSIsInZpZXdQcmludGVkIiwiY3JlYXRlUHJpbnRlZCIsInZpZXdUb2JlUHJpbnRlZCIsInVwZGF0ZVRvYmVQcmludGVkIl0sInJlZ2lvbiI6eyJpZCI6MSwicmVnaW9uIjoiU2lkYW1hIn0sInN0YXRpb24iOm51bGwsInNjaG9vbCI6bnVsbCwiaWF0IjoxNzQ2MDk5MzU3LCJleHAiOjE3NDYyNzIxNTd9.XkT0Og6gJ_NP9GStC-ga0RFEpZ_HV_cxLDYgEx7PLAM";
+  // localStorage.setItem("auth_token", auth);
+  const { user } = useAuth(); // Access user from AuthContext
+  const regionId = user?.region?.id; // Get the region ID from the user object
 
   const {
     data: RegionData,
     isLoading: RegionIsLoading,
     error: RegionError,
-  } = useGetRegionPerformance(1, "2025-01-01", "2025-12-31");
+  } = useGetRegionPerformance(regionId, "2025-01-01", "2025-12-31");
 
   const {
     data: regionStudentData,
     isLoading: regionStudentIsLoading,
     error: regionStudentError,
-  } = useGetStudentsInRegion();
+  } = useGetStudentsInRegion(regionId); // Provide a default value if regionId is undefined
 
   const {
     data: regionLicenseData,
     isLoading: regionLicenseIsLoading,
     error: regionLicenseError,
-  } = useGetLicenseTypesInRegion();
+  } = useGetLicenseTypesInRegion(regionId);
 
   const {
     data: regionStationData,
     isLoading: regionStationIsLoading,
     error: regionStationError,
-  } = useGetStationsInRegion();
+  } = useGetStationsInRegion(regionId);
 
   const {
     data: regionSchoolData,
     isLoading: regionSchoolIsLoading,
     error: regionSchoolError,
-  } = useGetSchoolsInRegion();
+  } = useGetSchoolsInRegion(regionId);
 
   const {
     data: stationData,
@@ -84,13 +104,13 @@ export default function Page() {
     data: regionTotalData,
     isLoading: regionTotalIsLoading,
     error: regionTotalError,
-  } = useGetRegionTotalData();
+  } = useGetRegionTotalData(regionId);
 
   const {
     data: chartData,
     isLoading: chartIsLoading,
     error: chartError,
-  } = useGetReportofStations();
+  } = useGetReportofStations(regionId);
 
   interface SchoolData {
     name: string;
@@ -103,9 +123,9 @@ export default function Page() {
     data: regionalStationData,
     isLoading: regionalStationIsLoading,
     error: regionalStationError,
-  } = usegetRegionStationData();
+  } = usegetRegionStationData(regionId);
 
-  console.log("this is regional station data", regionalStationData);
+  //  console.log("this is regional station data", regionalStationData);
 
   const [selectedMonth, setSelectedMonth] = useState("All");
 
@@ -159,6 +179,8 @@ export default function Page() {
       setSelectedStation(regionStationData.stations[0].id);
     }
   }, [regionStationData, selectedStation]);
+
+  //console.log("passed students", regionTotalData?.students?.passed?.total);
   return (
     <>
       <div className="text-black flex flex-col gap-6 p-10 max-lg:p-4 bg-white">
@@ -208,20 +230,20 @@ export default function Page() {
           />
           <Card
             name="Passed Students"
-            value={regionTotalData?.students.passed.total}
+            value={regionTotalData?.students?.passed?.total}
             Icon={Cog}
-            male={regionTotalData?.students.passed.male}
-            female={regionTotalData?.students.passed.female}
+            male={regionTotalData?.students?.passed?.male}
+            female={regionTotalData?.students?.passed?.female}
           />
           <Card
             name="Failed Students"
-            value={regionTotalData?.students.failed.total}
+            value={regionTotalData?.students?.failed?.total}
             Icon={Cog}
-            male={regionTotalData?.students.failed.male}
-            female={regionTotalData?.students.failed.female}
+            male={regionTotalData?.students?.failed?.male}
+            female={regionTotalData?.students?.failed?.female}
           />
           <LicenseTypeCard2
-            selectedStation={1}
+            selectedStation={regionId}
             // data={regionLicenseData}
             // loading={regionLicenseIsLoading}
           />
@@ -232,15 +254,15 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-gray-600 text-center">
               Passed Students Gender Distribution
             </h3>
-            {regionTotalData?.students.passed.male === 0 &&
-            regionTotalData?.students.passed.female === 0 ? (
+            {regionTotalData?.students?.passed?.male === 0 &&
+            regionTotalData?.students?.passed?.female === 0 ? (
               <div className="flex items-center  justify-center">
                 <p className="text-black">No data available</p>
               </div>
             ) : (
               <StudentGenderChart
-                male={regionTotalData?.students.passed.male}
-                female={regionTotalData?.students.passed.female}
+                male={regionTotalData?.students?.passed?.male}
+                female={regionTotalData?.students?.passed?.female}
               />
             )}
           </div>
@@ -248,15 +270,15 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-gray-600 text-center">
               Failed Students Gender Distribution
             </h3>
-            {regionTotalData?.students.failed.male === 0 &&
-            regionTotalData?.students.failed.female === 0 ? (
+            {regionTotalData?.students?.failed?.male === 0 &&
+            regionTotalData?.students?.failed?.female === 0 ? (
               <div className="flex items-center  justify-center">
                 <p className="text-black">No data available</p>
               </div>
             ) : (
               <StudentGenderChart
-                male={regionTotalData?.students.failed.male}
-                female={regionTotalData?.students.failed.female}
+                male={regionTotalData?.students?.failed?.male}
+                female={regionTotalData?.students?.failed?.female}
               />
             )}
           </div>

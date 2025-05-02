@@ -64,12 +64,12 @@ export const useGetSchool = (id: any) => {
   return { data, isLoading, error };
 };
 
-export const useGetRegionTotalData = () => {
+export const useGetRegionTotalData = (id: any) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["regionTotalData"],
+    queryKey: ["regionTotalData", id],
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/region/student-data/1`,
+        `${API_BASE_URL}/region/student-data/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +96,7 @@ export const useGetStation = (id: any) => {
       return response.data;
     },
   });
-  console.log("data", data);
+  //console.log("data", data);
 
   return { data, isLoading, error };
 };
@@ -120,12 +120,12 @@ export const useGetStationLicenseType = (id: any) => {
   return { data, isLoading, error };
 };
 
-export const useGetReportofStations = () => {
+export const useGetReportofStations = (id: any) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["stationsreport"],
+    queryKey: ["stationsreport", id],
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/aregion/student-report/1`,
+        `${API_BASE_URL}/aregion/student-report/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -199,12 +199,12 @@ export const useGetStationStudentDataByMonth = (
   return { data, isLoading, error, refetch };
 };
 
-export const useGetStationsInRegion = () => {
+export const useGetStationsInRegion = (id: any) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["stationsInRegion"],
+    queryKey: ["stationsInRegion", id],
 
     queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/aregion/1`, {
+      const response = await axios.get(`${API_BASE_URL}/aregion/${id}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -216,47 +216,53 @@ export const useGetStationsInRegion = () => {
   return { data, isLoading, error };
 };
 
-export const useGetStudentsInRegion = () => {
+export const useGetStudentsInRegion = (id: any) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["studentsInRegion"],
-
-    queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/analytics/student/1`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.data;
-    },
-  });
-
-  return { data, isLoading, error };
-};
-
-export const useGetSchoolsInRegion = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["schoolsInRegion"],
-
-    queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/analytics/school/1`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.data;
-    },
-  });
-
-  return { data, isLoading, error };
-};
-
-export const useGetLicenseTypesInRegion = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["licenseTypesInRegion"],
+    queryKey: ["studentsInRegion", id],
 
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/region/license-count/1`,
+        `${API_BASE_URL}/analytics/student/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+
+  return { data, isLoading, error };
+};
+
+export const useGetSchoolsInRegion = (id: any) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["schoolsInRegion", id],
+
+    queryFn: async () => {
+      const response = await axios.get(
+        `${API_BASE_URL}/analytics/school/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+
+  return { data, isLoading, error };
+};
+
+export const useGetLicenseTypesInRegion = (id: any) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["licenseTypesInRegion", id],
+
+    queryFn: async () => {
+      const response = await axios.get(
+        `${API_BASE_URL}/region/license-count/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -283,7 +289,7 @@ export const useGetRegionPerformance = (
       if (endDate) params.append("endDate", endDate);
 
       const response = await axios.get(
-        `${API_BASE_URL}/aregion/student-report/${id}?${params.toString()}`,
+        `${API_BASE_URL}/region/student-data/${id}?${params.toString()}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -381,12 +387,12 @@ export const useGetSchoolPerformance = (
 //   return { data, isLoading, error };
 // };
 
-export const usegetRegionStationData = () => {
+export const usegetRegionStationData = (id: any) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["regionStationData"],
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/student-counts/region/1`,
+        `${API_BASE_URL}/student-counts/region/${id}`,
         {
           headers: {
             "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Card from "@/components/card";
 import { Cog, Users, Home, Car, Loader, KeyRound } from "lucide-react";
 import {
@@ -30,24 +30,46 @@ import {
 import LicenseTypeCard2 from "@/components/license2";
 import { LicenseBarChart2 } from "@/components/lchart";
 import StationWiseStudentPerformance from "@/components/stationBymonth";
+import { useAuth } from "@/context/AuthContext";
+import { setCookie } from "nookies";
+import path from "path";
 
 export default function Page() {
   const router = useRouter();
+  const { user } = useAuth(); // Access user from AuthContext
+  const regionId = user?.region?.id; // Get the region ID from the user object
   const {
     data: regionStationData,
     isLoading: regionStationIsLoading,
     error: regionStationError,
-  } = useGetStationsInRegion();
+  } = useGetStationsInRegion(regionId);
 
   const [selectedStation, setSelectedStation] = useState(
     regionStationData?.stations?.[0]?.id || 1
   );
+
+  setCookie(null, "selectedStation", selectedStation.toString(), {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    path: "/",
+  });
+  // useEffect(() => {
+  //   if (typeof window !== "undefined" && selectedStation) {
+  //     localStorage.setItem("selectedStation", selectedStation.toString());
+  //   }
+  // }, [selectedStation]);
+
+  // const [selectedStation, setSelectedStation] = useState(
+  //   regionStationData?.stations?.[0]?.id || 1
+  // );
+  //store in local storage
+  // localStorage.setItem("selectedStation", selectedStation.toString());
+
   const {
     data: chartData,
     isLoading: chartIsLoading,
     error: chartError,
   } = useGetReportofSchools(selectedStation);
-  console.log("selected station", selectedStation);
+  //console.log("selected station", selectedStation);
   const {
     data: stationData,
     isLoading,
@@ -67,7 +89,7 @@ export default function Page() {
     if (!schoolDetailChartData) {
       return [];
     }
-    console.log("the data of selected school", schoolDetailChartData);
+    //console.log("the data of selected school", schoolDetailChartData);
     const name = schoolDetailChartData.name || "Selected School"; // Use a default name if not available
     const passed = schoolDetailChartData.passed || 0;
     const failed = schoolDetailChartData.failed || 0;
@@ -83,7 +105,7 @@ export default function Page() {
     ];
   }, [schoolDetailChartData, selectedSchool]);
 
-  console.log("station is loading", isLoading);
+  //console.log("station is loading", isLoading);
   const {
     data: stationLicenseData,
     isLoading: licenseIsLoading,
@@ -273,7 +295,7 @@ export default function Page() {
           {/* Station Filter Dropdown */}
           <div className="flex flex-col justify-center mb-4">
             <div className="flex justify-end">
-              {/* <select
+              <select
                 className="border border-gray-300 rounded px-4 py-2"
                 value={selectedSchool}
                 onChange={(e) => setSelectedSchool(e.target.value)}
@@ -285,7 +307,7 @@ export default function Page() {
                     {name.name}
                   </option>
                 ))}
-              </select> */}
+              </select>
             </div>
           </div>
           {chartIsLoading ? (
