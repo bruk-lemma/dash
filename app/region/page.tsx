@@ -41,7 +41,6 @@ import StationWiseStudentPerformance from "@/components/stationBymonth";
 import StudentGenderChart from "@/components/stuchart";
 import RegionWiseStudentPerformance from "@/components/regionbymonth";
 import { useAuth } from "@/context/AuthContext";
-import { set } from "mongoose";
 import { setCookie } from "nookies";
 
 export default function Page() {
